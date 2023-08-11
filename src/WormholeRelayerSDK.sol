@@ -5,7 +5,7 @@ import "./interfaces/IWormholeReceiver.sol";
 import "./interfaces/IWormholeRelayer.sol";
 import "./interfaces/ITokenBridge.sol";
 import {IERC20} from "./interfaces/IERC20.sol";
-import "openzeppelin-contracts-upgradeable/proxy/utils/Initializable.sol";
+import "../lib/openzeppelin-contracts-upgradeable/contracts/proxy/utils/Initializable.sol";
 
 import "./Utils.sol";
 
