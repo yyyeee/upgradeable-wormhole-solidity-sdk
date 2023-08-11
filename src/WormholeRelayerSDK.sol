@@ -5,19 +5,20 @@ import "./interfaces/IWormholeReceiver.sol";
 import "./interfaces/IWormholeRelayer.sol";
 import "./interfaces/ITokenBridge.sol";
 import {IERC20} from "./interfaces/IERC20.sol";
+import "openzeppelin-contracts-upgradeable/proxy/utils/Initializable.sol";
 
 import "./Utils.sol";
 
-abstract contract Base {
-    IWormholeRelayer public immutable wormholeRelayer;
-    IWormhole public immutable wormhole;
+abstract contract Base is Initializable {
+    IWormholeRelayer public wormholeRelayer;
+    IWormhole public wormhole;
 
     mapping(bytes32 => bool) public seenDeliveryVaaHashes;
 
     address registrationOwner;
     mapping(uint16 => bytes32) registeredSenders;
 
-    constructor(address _wormholeRelayer, address _wormhole) {
+    function initialize(address _wormholeRelayer, address _wormhole) public initializer {
         wormholeRelayer = IWormholeRelayer(_wormholeRelayer);
         wormhole = IWormhole(_wormhole);
         registrationOwner = msg.sender;
@@ -53,9 +54,10 @@ abstract contract Base {
 }
 
 abstract contract TokenBase is Base {
-    ITokenBridge public immutable tokenBridge;
+    ITokenBridge public tokenBridge;
 
-    constructor(address _wormholeRelayer, address _tokenBridge, address _wormhole) Base(_wormholeRelayer, _wormhole) {
+    function initialize(address _wormholeRelayer, address _tokenBridge, address _wormhole) public initializer {
+        Base.initialize(_wormholeRelayer, _wormhole);
         tokenBridge = ITokenBridge(_tokenBridge);
     }
 
