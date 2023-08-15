@@ -18,7 +18,7 @@ abstract contract Base is Initializable {
     address registrationOwner;
     mapping(uint16 => bytes32) registeredSenders;
 
-    function initialize(address _wormholeRelayer, address _wormhole) public initializer {
+    function initialize(address _wormholeRelayer, address _wormhole) public onlyInitializing {
         wormholeRelayer = IWormholeRelayer(_wormholeRelayer);
         wormhole = IWormhole(_wormhole);
         registrationOwner = msg.sender;
@@ -56,7 +56,7 @@ abstract contract Base is Initializable {
 abstract contract TokenBase is Base {
     ITokenBridge public tokenBridge;
 
-    function initialize(address _wormholeRelayer, address _tokenBridge, address _wormhole) public initializer {
+    function initialize(address _wormholeRelayer, address _tokenBridge, address _wormhole) public onlyInitializing {
         Base.initialize(_wormholeRelayer, _wormhole);
         tokenBridge = ITokenBridge(_tokenBridge);
     }
