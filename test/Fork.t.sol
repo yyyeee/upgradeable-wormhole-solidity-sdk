@@ -11,8 +11,6 @@ import "../src/testing/WormholeRelayerTest.sol";
 import "../src/WormholeRelayerSDK.sol";
 import "../src/Utils.sol";
 
-import "../src/library/Initializable.sol";
-
 import "forge-std/console.sol";
 
 contract Toy is Base {
@@ -24,7 +22,7 @@ contract Toy is Base {
         _initialize(_wormholeRelayer, _wormhole);
     }
 
-    function _initialize(address _wormholeRelayer, address _wormhole) internal initializer {
+    function _initialize(address _wormholeRelayer, address _wormhole) internal {
         Base.initialize(_wormholeRelayer, _wormhole);
     }
 
@@ -48,7 +46,7 @@ contract TokenToy is TokenSender, TokenReceiver {
         _initialize(_wormholeRelayer, _bridge, _wormhole);
     }
 
-    function _initialize(address _wormholeRelayer, address _bridge, address _wormhole) internal initializer {
+    function _initialize(address _wormholeRelayer, address _bridge, address _wormhole) internal {
         TokenBase.initialize(_wormholeRelayer, _bridge, _wormhole);
     }
 

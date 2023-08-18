@@ -5,11 +5,10 @@ import "./interfaces/IWormholeReceiver.sol";
 import "./interfaces/IWormholeRelayer.sol";
 import "./interfaces/ITokenBridge.sol";
 import {IERC20} from "./interfaces/IERC20.sol";
-import "./library/Initializable.sol";
 
 import "./Utils.sol";
 
-abstract contract Base is Initializable {
+abstract contract Base {
     IWormholeRelayer public wormholeRelayer;
     IWormhole public wormhole;
 
@@ -18,7 +17,11 @@ abstract contract Base is Initializable {
     address registrationOwner;
     mapping(uint16 => bytes32) registeredSenders;
 
-    function initialize(address _wormholeRelayer, address _wormhole) public onlyInitializing {
+    bool internal _wormholeRelayerInitialized;
+
+    function initialize(address _wormholeRelayer, address _wormhole) public {
+        require(!_wormholeRelayerInitialized, "WRI");
+        _wormholeRelayerInitialized = true;
         wormholeRelayer = IWormholeRelayer(_wormholeRelayer);
         wormhole = IWormhole(_wormhole);
         registrationOwner = msg.sender;
@@ -56,7 +59,8 @@ abstract contract Base is Initializable {
 abstract contract TokenBase is Base {
     ITokenBridge public tokenBridge;
 
-    function initialize(address _wormholeRelayer, address _tokenBridge, address _wormhole) public onlyInitializing {
+    function initialize(address _wormholeRelayer, address _tokenBridge, address _wormhole) public {
+        require(!_wormholeRelayerInitialized, "WRI");
         Base.initialize(_wormholeRelayer, _wormhole);
         tokenBridge = ITokenBridge(_tokenBridge);
     }
