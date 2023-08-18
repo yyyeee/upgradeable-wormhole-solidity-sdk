@@ -153,6 +153,12 @@ contract WormholeSDKTest is WormholeRelayerBasicTest {
         tokenToyTarget.setRegisteredSender(sourceChain, toWormholeFormat(address(tokenToySource)));
     }
 
+    function testInitializer() public {
+        toyTarget = new Toy(address(relayerTarget), address(wormholeTarget));
+        vm.expectRevert(bytes("WRI"));
+        toyTarget.initialize(address(relayerTarget), address(wormholeTarget));
+    }
+
     function testSendMessage() public {
         vm.recordLogs();
         (uint256 cost,) = relayerSource.quoteEVMDeliveryPrice(targetChain, 1e17, 100_000);
