@@ -19,7 +19,7 @@ abstract contract Base {
 
     bool internal _wormholeRelayerInitialized;
 
-    function initialize(address _wormholeRelayer, address _wormhole) public {
+    function __Base_init(address _wormholeRelayer, address _wormhole) public {
         require(!_wormholeRelayerInitialized, "WRI");
         _wormholeRelayerInitialized = true;
         wormholeRelayer = IWormholeRelayer(_wormholeRelayer);
@@ -59,9 +59,9 @@ abstract contract Base {
 abstract contract TokenBase is Base {
     ITokenBridge public tokenBridge;
 
-    function initialize(address _wormholeRelayer, address _tokenBridge, address _wormhole) public {
+    function __TokenBase_init(address _wormholeRelayer, address _tokenBridge, address _wormhole) public {
         require(!_wormholeRelayerInitialized, "WRI");
-        Base.initialize(_wormholeRelayer, _wormhole);
+        Base.__Base_init(_wormholeRelayer, _wormhole);
         tokenBridge = ITokenBridge(_tokenBridge);
     }
 

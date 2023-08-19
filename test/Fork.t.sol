@@ -19,11 +19,11 @@ contract Toy is Base {
     uint256 public payloadReceived;
 
     constructor(address _wormholeRelayer, address _wormhole) {
-        _initialize(_wormholeRelayer, _wormhole);
+        initialize(_wormholeRelayer, _wormhole);
     }
 
-    function _initialize(address _wormholeRelayer, address _wormhole) internal {
-        Base.initialize(_wormholeRelayer, _wormhole);
+    function initialize(address _wormholeRelayer, address _wormhole) public {
+        Base.__Base_init(_wormholeRelayer, _wormhole);
     }
 
     function receiveWormholeMessages(
@@ -47,7 +47,7 @@ contract TokenToy is TokenSender, TokenReceiver {
     }
 
     function _initialize(address _wormholeRelayer, address _bridge, address _wormhole) internal {
-        TokenBase.initialize(_wormholeRelayer, _bridge, _wormhole);
+        TokenBase.__TokenBase_init(_wormholeRelayer, _bridge, _wormhole);
     }
 
     uint256 constant GAS_LIMIT = 250_000;
