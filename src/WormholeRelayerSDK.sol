@@ -186,7 +186,7 @@ abstract contract TokenReceiver is TokenBase {
         bytes32 sourceAddress,
         uint16 sourceChain,
         bytes32 deliveryHash
-    ) external payable {
+    ) external virtual payable {
         TokenReceived[] memory receivedTokens = new TokenReceived[](additionalVaas.length);
 
         for (uint256 i = 0; i < additionalVaas.length; ++i) {

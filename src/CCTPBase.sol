@@ -145,7 +145,7 @@ abstract contract CCTPReceiver is CCTPBase {
         bytes32 sourceAddress,
         uint16 sourceChain,
         bytes32 deliveryHash
-    ) external payable {
+    ) external virtual payable {
         require(additionalMessages.length <= 1, "CCTP: At most one Message is supported");
 
         uint256 amountUSDCReceived;
