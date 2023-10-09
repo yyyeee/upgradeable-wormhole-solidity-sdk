@@ -146,6 +146,16 @@ abstract contract CCTPReceiver is CCTPBase {
         uint16 sourceChain,
         bytes32 deliveryHash
     ) external virtual payable {
+        _receiveWormholeMessagesWithCCTP(payload, additionalMessages, sourceAddress, sourceChain, deliveryHash);
+    }
+
+    function _receiveWormholeMessagesWithCCTP(
+        bytes memory payload,
+        bytes[] memory additionalMessages,
+        bytes32 sourceAddress,
+        uint16 sourceChain,
+        bytes32 deliveryHash
+    ) internal {
         require(additionalMessages.length <= 1, "CCTP: At most one Message is supported");
 
         uint256 amountUSDCReceived;

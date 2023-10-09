@@ -187,6 +187,16 @@ abstract contract TokenReceiver is TokenBase {
         uint16 sourceChain,
         bytes32 deliveryHash
     ) external virtual payable {
+        _receiveWormholeMessages(payload, additionalVaas, sourceAddress, sourceChain, deliveryHash);
+    }
+
+    function _receiveWormholeMessages(
+        bytes memory payload,
+        bytes[] memory additionalVaas,
+        bytes32 sourceAddress,
+        uint16 sourceChain,
+        bytes32 deliveryHash
+    ) internal {
         TokenReceived[] memory receivedTokens = new TokenReceived[](additionalVaas.length);
 
         for (uint256 i = 0; i < additionalVaas.length; ++i) {
