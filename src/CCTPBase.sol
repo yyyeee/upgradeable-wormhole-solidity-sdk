@@ -108,7 +108,9 @@ abstract contract CCTPSender is CCTPBase {
         bytes memory payload,
         uint256 receiverValue,
         uint256 gasLimit,
-        uint256 amount
+        uint256 amount,
+        uint16 refundChain,
+        address refundAddress
     ) internal returns (uint64 sequence) {
         MessageKey[] memory messageKeys = new MessageKey[](1);
         messageKeys[0] = transferUSDC(amount, targetChain, targetAddress);
@@ -125,8 +127,8 @@ abstract contract CCTPSender is CCTPBase {
             receiverValue,
             0,
             gasLimit,
-            targetChain,
-            address(0x0),
+            refundChain,
+            refundAddress,
             defaultDeliveryProvider,
             messageKeys,
             CONSISTENCY_LEVEL_FINALIZED

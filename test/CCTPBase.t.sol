@@ -82,7 +82,9 @@ contract CCTPToy is CCTPSender, CCTPReceiver {
             payload,
             0, // receiver value
             GAS_LIMIT,
-            amount
+            amount,
+            targetChain, // refundChain
+            recipient // refundAddress
         );
     }
 
