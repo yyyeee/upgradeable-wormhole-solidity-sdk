@@ -115,7 +115,6 @@ abstract contract CCTPSender is CCTPBase {
         MessageKey[] memory messageKeys = new MessageKey[](1);
         messageKeys[0] = transferUSDC(amount, targetChain, targetAddress);
 
-        bytes memory userPayload = abi.encode(amount, payload);
         address defaultDeliveryProvider = wormholeRelayer.getDefaultDeliveryProvider();
 
         (uint256 cost,) = wormholeRelayer.quoteEVMDeliveryPrice(targetChain, receiverValue, gasLimit);
@@ -123,7 +122,7 @@ abstract contract CCTPSender is CCTPBase {
         sequence = wormholeRelayer.sendToEvm{value: cost}(
             targetChain,
             targetAddress,
-            userPayload,
+            abi.encode(amount, payload),
             receiverValue,
             0,
             gasLimit,
