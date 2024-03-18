@@ -21,6 +21,7 @@ struct ChainInfo {
     uint16 chainId;
     string name;
     string url;
+    uint256 blockNumber;
     IWormholeRelayer relayer;
     ITokenBridge tokenBridge;
     IWormhole wormhole;
@@ -44,6 +45,7 @@ struct ActiveFork {
     uint16 chainId;
     string name;
     string url;
+    uint256 blockNumber;
     uint256 fork;
     IWormholeRelayer relayer;
     ITokenBridge tokenBridge;
@@ -87,8 +89,8 @@ abstract contract WormholeRelayerTest is Test {
 
         // set default active forks. These can be overridden in your test
         ChainInfo[] memory forks = new ChainInfo[](2);
-        forks[0] = chainInfosTestnet[6]; // fuji avax
-        forks[1] = chainInfosTestnet[14]; // alfajores celo
+        forks[0] = chainInfosMainnet[6]; // avax
+        forks[1] = chainInfosMainnet[14]; // celo
         setActiveForks(forks);
     }
 
@@ -103,6 +105,7 @@ abstract contract WormholeRelayerTest is Test {
             activeForks[chainInfos[i].chainId] = ActiveFork({
                 chainId: chainInfos[i].chainId,
                 url: chainInfos[i].url,
+                blockNumber: chainInfos[i].blockNumber,
                 name: chainInfos[i].name,
                 relayer: chainInfos[i].relayer,
                 tokenBridge: chainInfos[i].tokenBridge,
@@ -132,7 +135,13 @@ abstract contract WormholeRelayerTest is Test {
         for (uint256 i = 0; i < activeForksList.length; ++i) {
             uint16 chainId = activeForksList[i];
             ActiveFork storage fork = activeForks[chainId];
-            fork.fork = vm.createSelectFork(fork.url);
+            if (fork.blockNumber != 0) {
+                fork.fork = vm.createSelectFork(fork.url, fork.blockNumber);
+                console.log("fork %s already exists at block %d", fork.name, fork.blockNumber);
+            } else {
+                fork.fork = vm.createSelectFork(fork.url);
+                console.log("fork %s created at block %d", fork.name, fork.blockNumber);
+            }
             fork.guardian = new WormholeSimulator(
                 address(fork.wormhole),
                 DEVNET_GUARDIAN_PK
@@ -260,6 +269,7 @@ abstract contract WormholeRelayerTest is Test {
                 "AVALANCHE_FUJI_RPC_URL",
                 string("https://api.avax-test.network/ext/bc/C/rpc")
             ),
+            blockNumber: 0,
             relayer: IWormholeRelayer(
                 0xA3cF45939bD6260bcFe3D66bc73d60f19e49a8BB
             ),
@@ -282,6 +292,7 @@ abstract contract WormholeRelayerTest is Test {
                 "CELO_TESTNET_RPC_URL",
                 string("https://alfajores-forno.celo-testnet.org")
             ),
+            blockNumber: 0,
             relayer: IWormholeRelayer(
                 0x306B68267Deb7c5DfCDa3619E22E9Ca39C374f84
             ),
@@ -300,6 +311,7 @@ abstract contract WormholeRelayerTest is Test {
                 "BSC_TESTNET_RPC_URL",
                 string("https://bsc-testnet.public.blastapi.io")
             ),
+            blockNumber: 0,
             relayer: IWormholeRelayer(
                 0x80aC94316391752A193C1c47E27D382b507c93F3
             ),
@@ -318,6 +330,7 @@ abstract contract WormholeRelayerTest is Test {
                 "POLYGON_MUMBAI_RPC_URL",
                 string("https://rpc.ankr.com/polygon_mumbai")
             ),
+            blockNumber: 0,
             relayer: IWormholeRelayer(
                 0x0591C25ebd0580E0d4F27A82Fc2e24E7489CB5e0
             ),
@@ -340,6 +353,7 @@ abstract contract WormholeRelayerTest is Test {
                 "MOONBASE_ALPHA_RPC_URL",
                 string("https://rpc.testnet.moonbeam.network")
             ),
+            blockNumber: 0,
             relayer: IWormholeRelayer(
                 0x0591C25ebd0580E0d4F27A82Fc2e24E7489CB5e0
             ),
@@ -351,6 +365,7 @@ abstract contract WormholeRelayerTest is Test {
             circleTokenMessenger: ITokenMessenger(address(0)),
             USDC: IERC20(address(0))
         });
+
         chainInfosMainnet[2] = ChainInfo({
             chainId: 2,
             name: "ethereum",
@@ -358,6 +373,7 @@ abstract contract WormholeRelayerTest is Test {
                 "ETHEREUM_RPC_URL",
                 string("https://rpc.ankr.com/eth")
             ),
+            blockNumber: 19463725,
             relayer: IWormholeRelayer(
                 0x27428DD2d3DD32A4D7f7C497eAaa23130d894911
             ),
@@ -380,6 +396,7 @@ abstract contract WormholeRelayerTest is Test {
                 "BSC_RPC_URL",
                 string("https://bsc-dataseed2.defibit.io")
             ),
+            blockNumber: 0,
             relayer: IWormholeRelayer(
                 0x27428DD2d3DD32A4D7f7C497eAaa23130d894911
             ),
@@ -398,6 +415,7 @@ abstract contract WormholeRelayerTest is Test {
                 "AVALANCHE_RPC_URL",
                 string("https://rpc.ankr.com/avalanche")
             ),
+            blockNumber: 43073997,
             relayer: IWormholeRelayer(
                 0x27428DD2d3DD32A4D7f7C497eAaa23130d894911
             ),
@@ -420,6 +438,7 @@ abstract contract WormholeRelayerTest is Test {
                 "FANTOM_RPC_URL",
                 string("https://rpc.ankr.com/fantom")
             ),
+            blockNumber: 0,
             relayer: IWormholeRelayer(
                 0x27428DD2d3DD32A4D7f7C497eAaa23130d894911
             ),
@@ -438,6 +457,7 @@ abstract contract WormholeRelayerTest is Test {
                 "KLAYTN_RPC_URL",
                 string("https://klaytn-mainnet-rpc.allthatnode.com:8551")
             ),
+            blockNumber: 0,
             relayer: IWormholeRelayer(
                 0x27428DD2d3DD32A4D7f7C497eAaa23130d894911
             ),
@@ -453,6 +473,7 @@ abstract contract WormholeRelayerTest is Test {
             chainId: 14,
             name: "celo",
             url: vm.envOr("CELO_RPC_URL", string("https://forno.celo.org")),
+            blockNumber: 0,
             relayer: IWormholeRelayer(
                 0x27428DD2d3DD32A4D7f7C497eAaa23130d894911
             ),
@@ -471,6 +492,7 @@ abstract contract WormholeRelayerTest is Test {
                 "ACALA_RPC_URL",
                 string("https://eth-rpc-acala.aca-api.network")
             ),
+            blockNumber: 0,
             relayer: IWormholeRelayer(
                 0x27428DD2d3DD32A4D7f7C497eAaa23130d894911
             ),
@@ -489,6 +511,7 @@ abstract contract WormholeRelayerTest is Test {
                 "KARURA_RPC_URL",
                 string("https://eth-rpc-karura.aca-api.network")
             ),
+            blockNumber: 0,
             relayer: IWormholeRelayer(
                 0x27428DD2d3DD32A4D7f7C497eAaa23130d894911
             ),
@@ -507,6 +530,7 @@ abstract contract WormholeRelayerTest is Test {
                 "MOOMBEAM_RPC_URL",
                 string("https://rpc.ankr.com/moonbeam")
             ),
+            blockNumber: 0,
             relayer: IWormholeRelayer(
                 0x27428DD2d3DD32A4D7f7C497eAaa23130d894911
             ),
@@ -525,6 +549,7 @@ abstract contract WormholeRelayerTest is Test {
                 "ARBITRUM_RPC_URL",
                 string("https://rpc.ankr.com/arbitrum")
             ),
+            blockNumber: 191751256,
             relayer: IWormholeRelayer(
                 0x27428DD2d3DD32A4D7f7C497eAaa23130d894911
             ),
@@ -547,6 +572,7 @@ abstract contract WormholeRelayerTest is Test {
                 "OPTIMISM_RPC_URL",
                 string("https://rpc.ankr.com/optimism")
             ),
+            blockNumber: 0,
             relayer: IWormholeRelayer(
                 0x27428DD2d3DD32A4D7f7C497eAaa23130d894911
             ),
